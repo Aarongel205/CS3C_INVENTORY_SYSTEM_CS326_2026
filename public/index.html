@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StockWise — Inventory Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="#E8FF47"/>
+          <rect x="6" y="6" width="7" height="7" rx="2" fill="#1a1a1a"/>
+          <rect x="15" y="6" width="7" height="7" rx="2" fill="#1a1a1a" opacity="0.4"/>
+          <rect x="6" y="15" width="7" height="7" rx="2" fill="#1a1a1a" opacity="0.4"/>
+          <rect x="15" y="15" width="7" height="7" rx="2" fill="#1a1a1a"/>
+        </svg>
+        <span class="logo-text">StockWise</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-page="dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </a>
+        <a href="#" class="nav-item" data-page="inventory">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+          Inventory
+        </a>
+        <a href="#" class="nav-item" data-page="add-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Add Item
+        </a>
+        <a href="#" class="nav-item" data-page="reports">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Reports
+        </a>
+        <a href="#" class="nav-item" data-page="logs">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Activity Log
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-pill">
+          <div class="user-avatar">T</div>
+          <div class="user-info">
+            <span class="user-name">Team Project</span>
+            <span class="user-role">Admin</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="topbar-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="globalSearch" placeholder="Search items…" />
+        </div>
+        <div class="topbar-actions">
+          <div class="status-badge" id="dbStatus">
+            <span class="status-dot"></span> Live
+          </div>
+          <button class="btn-icon" title="Notifications" id="notifBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notif-badge" id="notifCount">0</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Pages -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h1>Dashboard</h1>
+          <p class="page-subtitle">Overview of your inventory health</p>
+        </div>
+        <div class="stat-grid" id="statGrid">
+          <div class="stat-card">
+            <span class="stat-label">Total Items</span>
+            <span class="stat-value" id="stat-total">—</span>
+            <span class="stat-trend up">↑ Active</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Stock</span>
+            <span class="stat-value" id="stat-stock">—</span>
+            <span class="stat-trend">Units</span>
+          </div>
+          <div class="stat-card warn">
+            <span class="stat-label">Low Stock</span>
+            <span class="stat-value" id="stat-low">—</span>
+            <span class="stat-trend warn">Needs restock</span>
+          </div>
+          <div class="stat-card danger">
+            <span class="stat-label">Out of Stock</span>
+            <span class="stat-value" id="stat-out">—</span>
+            <span class="stat-trend danger">Critical</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Inventory Value</span>
+            <span class="stat-value" id="stat-value">—</span>
+            <span class="stat-trend up">₱ Total</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Categories</span>
+            <span class="stat-value" id="stat-cats">—</span>
+            <span class="stat-trend">Groups</span>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-head">
+              <h3>Low Stock Alerts</h3>
+              <span class="badge warn" id="alertBadge">0</span>
+            </div>
+            <div id="alertList" class="alert-list">
+              <p class="empty-state">No alerts right now 🎉</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3>Recent Activity</h3>
+            </div>
+            <div id="recentActivity" class="activity-list">
+              <p class="empty-state">No recent activity</p>
+            </div>
+          </div>
+          <div class="card full-width">
+            <div class="card-head">
+              <h3>Stock by Category</h3>
+            </div>
+            <div id="categoryChart" class="category-bars"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-inventory">
+        <div class="page-header">
+          <div>
+            <h1>Inventory</h1>
+            <p class="page-subtitle">Manage all items</p>
+          </div>
+          <button class="btn-primary" onclick="showPage('add-item')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Item
+          </button>
+        </div>
+        <div class="table-controls">
+          <div class="filter-row">
+            <select id="filterCategory" class="filter-select">
+              <option value="">All Categories</option>
+            </select>
+            <select id="filterStatus" class="filter-select">
+              <option value="">All Status</option>
+              <option value="in-stock">In Stock</option>
+              <option value="low-stock">Low Stock</option>
+              <option value="out-of-stock">Out of Stock</option>
+            </select>
+            <select id="sortBy" class="filter-select">
+              <option value="name">Sort: Name</option>
+              <option value="quantity">Sort: Quantity</option>
+              <option value="price">Sort: Price</option>
+              <option value="date">Sort: Date Added</option>
+            </select>
+          </div>
+          <div class="table-meta">
+            <span id="itemCount">0 items</span>
+            <button class="btn-icon" id="exportBtn" title="Export CSV">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="inventory-table" id="inventoryTable">
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Last Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryBody">
+              <tr><td colspan="8" class="empty-state">Loading inventory…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+
+      <div class="page" id="page-add-item">
+        <div class="page-header">
+          <h1 id="formTitle">Add New Item</h1>
+          <p class="page-subtitle">Fill in item details below</p>
+        </div>
+        <div class="form-layout">
+          <form id="itemForm" class="item-form" onsubmit="return false">
+            <input type="hidden" id="editId" />
+            <div class="form-section">
+              <h3>Basic Info</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="itemName">Item Name *</label>
+                  <input type="text" id="itemName" placeholder="e.g. Wireless Mouse" required />
+                </div>
+                <div class="form-group">
+                  <label for="itemSKU">SKU</label>
+                  <input type="text" id="itemSKU" placeholder="Auto-generated" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="itemCategory">Category *</label>
+                  <input type="text" id="itemCategory" placeholder="e.g. Electronics" list="categoryList" required />
+                  <datalist id="categoryList"></datalist>
+                </div>
+                <div class="form-group">
+                  <label for="itemSupplier">Supplier</label>
+                  <input type="text" id="itemSupplier" placeholder="e.g. TechSource PH" />
+                </div>
+              </div>
+              <div class="form-group full">
+                <label for="itemDescription">Description</label>
+                <textarea id="itemDescription" rows="3" placeholder="Optional item description…"></textarea>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Stock & Pricing</h3>
+              <div class="form-row three-col">
+                <div class="form-group">
+                  <label for="itemQuantity">Quantity *</label>
+                  <input type="number" id="itemQuantity" min="0" placeholder="0" required />
+                </div>
+                <div class="form-group">
+                  <label for="itemLowThreshold">Low Stock Alert</label>
+                  <input type="number" id="itemLowThreshold" min="0" placeholder="5" />
+                </div>
+                <div class="form-group">
+                  <label for="itemUnit">Unit</label>
+                  <input type="text" id="itemUnit" placeholder="pcs / kg / box" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="itemCostPrice">Cost Price (₱)</label>
+                  <input type="number" id="itemCostPrice" min="0" step="0.01" placeholder="0.00" />
+                </div>
+                <div class="form-group">
+                  <label for="itemSellPrice">Selling Price (₱) *</label>
+                  <input type="number" id="itemSellPrice" min="0" step="0.01" placeholder="0.00" required />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Location</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="itemLocation">Storage Location</label>
+                  <input type="text" id="itemLocation" placeholder="e.g. Shelf A-3" />
+                </div>
+                <div class="form-group">
+                  <label for="itemExpiry">Expiry Date</label>
+                  <input type="date" id="itemExpiry" />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" onclick="resetForm()">Cancel</button>
+              <button type="submit" class="btn-primary" id="submitBtn" onclick="saveItem()">Save Item</button>
+            </div>
+          </form>
+
+          <aside class="form-sidebar">
+            <div class="card preview-card">
+              <h4>Preview</h4>
+              <div id="itemPreview" class="item-preview">
+                <p class="empty-state">Fill in the form to see a preview</p>
+              </div>
+            </div>
+            <div class="card tips-card">
+              <h4>Tips</h4>
+              <ul class="tips-list">
+                <li>SKU is auto-generated if left blank</li>
+                <li>Set a low stock threshold to receive alerts</li>
+                <li>Use consistent category names</li>
+                <li>Cost price helps track margins</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="page" id="page-reports">
+        <div class="page-header">
+          <h1>Reports</h1>
+          <p class="page-subtitle">Data-driven inventory insights (KPIs)</p>
+        </div>
+        <div class="report-kpis" id="reportKpis"></div>
+        <div class="report-grid">
+          <div class="card">
+            <div class="card-head"><h3>Top Items by Value</h3></div>
+            <div id="topValueList" class="rank-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Stock Distribution</h3></div>
+            <div id="stockPie" class="pie-container"></div>
+          </div>
+          <div class="card full-width">
+            <div class="card-head">
+              <h3>Category Breakdown</h3>
+            </div>
+            <div id="categoryTable"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page" id="page-logs">
+        <div class="page-header">
+          <div>
+            <h1>Activity Log</h1>
+            <p class="page-subtitle">Full audit trail of all changes</p>
+          </div>
+          <button class="btn-secondary" onclick="exportLogs()">Export Log</button>
+        </div>
+        <div class="card">
+          <div class="log-filters">
+            <select id="logFilter" class="filter-select" onchange="renderLogs()">
+              <option value="">All Actions</option>
+              <option value="ADD">Added</option>
+              <option value="UPDATE">Updated</option>
+              <option value="DELETE">Deleted</option>
+              <option value="RESTOCK">Restocked</option>
+            </select>
+          </div>
+          <div id="logList" class="log-list"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal: Adjust Stock -->
+  <div class="modal-overlay" id="stockModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>Adjust Stock</h3>
+        <button class="btn-icon" onclick="closeModal('stockModal')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="stockModalItem" class="modal-item-name">—</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Action</label>
+            <select id="stockAction">
+              <option value="add">Add Stock</option>
+              <option value="remove">Remove Stock</option>
+              <option value="set">Set Exact Quantity</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Amount</label>
+            <input type="number" id="stockAmount" min="0" value="1" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Note (optional)</label>
+          <input type="text" id="stockNote" placeholder="e.g. Delivery received" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('stockModal')">Cancel</button>
+        <button class="btn-primary" onclick="confirmStockAdjust()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Delete Confirm -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal small">
+      <div class="modal-head">
+        <h3>Delete Item</h3>
+        <button class="btn-icon" onclick="closeModal('deleteModal')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="deleteItemName"></strong>? This cannot be undone.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn-danger" onclick="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/supabase-client.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

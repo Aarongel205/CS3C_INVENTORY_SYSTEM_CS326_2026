@@ -68,6 +68,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // ── Input validation helper (NIROS: secure coding) ─────────
+function validateItem(body) {
+  const errors = [];
+  if (!body.name || typeof body.name !== 'string' || body.name.trim().length < 1)
+    errors.push('name is required');
+  if (body.name && body.name.length > 200)
+    errors.push('name must be ≤200 characters');
+  if (body.quantity !== undefined && (isNaN(body.quantity) || body.quantity < 0))
+    errors.push('quantity must be a non-negative number');
+  if (body.sell_price !== undefined && (isNaN(body.sell_price) || body.sell_price < 0))
+    errors.push('sell_price must be a non-negative number');
+  return errors;
+}
 
 
 // ── Proxy routes to Supabase (optional — keeps key server-side) ──

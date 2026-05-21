@@ -18,7 +18,15 @@ const PORT = process.env.PORT || 3000;
 
 
 // ── Rate Limiting (NIROS: Input validation / security) ─────
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 200,
+  message: { error: 'Too many requests, please slow down.' }
+});
 
+app.use('/api/', apiLimiter);
+
+// ── Basic Authentication (NIROS: Security assignment) ──────
 
 
 app.use('/api/', apiLimiter);

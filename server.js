@@ -18,7 +18,36 @@ const PORT = process.env.PORT || 3000;
 
 
 // ── Rate Limiting (NIROS: Input validation / security) ─────
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 200,
+  message: { error: 'Too many requests, please slow down.' }
+});
 
+app.use('/api/', apiLimiter);
+
+// ── Basic Authentication (NIROS: Security assignment) ──────
+function basicAuth(req, res, next) {
+  if (req.path === '/api/health') return next();
+
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Basic ')) {
+    res.set('WWW-Authenticate', 'Basic realm="StockWise API"');
+    return res.status(401).json({ error: 'Authentication required.' });
+  }
+
+  const base64 = authHeader.slice(6);
+  const decoded = Buffer.from(base64, 'base64').toString('utf8');
+  const [user, pass] = decoded.split(':');
+
+  const validUser = process.env.ADMIN_USER || 'admin';
+  const validPass = process.env.ADMIN_PASS || 'stockwise2026';
+
+  if (user === validUser && pass === validPass) return next();
+
+  res.set('WWW-Authenticate', 'Basic realm="StockWise API"');
+  return res.status(401).json({ error: 'Invalid credentials.' });
+}
 
 
 app.use('/api/', apiLimiter);
@@ -39,6 +68,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // ── Input validation helper (NIROS: secure coding) ─────────
+function validateItem(body) {
+  const errors = [];
+  if (!body.name || typeof body.name !== 'string' || body.name.trim().length < 1)
+    errors.push('name is required');
+  if (body.name && body.name.length > 200)
+    errors.push('name must be ≤200 characters');
+  if (body.quantity !== undefined && (isNaN(body.quantity) || body.quantity < 0))
+    errors.push('quantity must be a non-negative number');
+  if (body.sell_price !== undefined && (isNaN(body.sell_price) || body.sell_price < 0))
+    errors.push('sell_price must be a non-negative number');
+  return errors;
+}
 
 
 // ── Proxy routes to Supabase (optional — keeps key server-side) ──

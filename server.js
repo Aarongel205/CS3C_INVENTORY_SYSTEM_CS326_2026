@@ -27,6 +27,27 @@ const apiLimiter = rateLimit({
 app.use('/api/', apiLimiter);
 
 // ── Basic Authentication (NIROS: Security assignment) ──────
+function basicAuth(req, res, next) {
+  if (req.path === '/api/health') return next();
+
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Basic ')) {
+    res.set('WWW-Authenticate', 'Basic realm="StockWise API"');
+    return res.status(401).json({ error: 'Authentication required.' });
+  }
+
+  const base64 = authHeader.slice(6);
+  const decoded = Buffer.from(base64, 'base64').toString('utf8');
+  const [user, pass] = decoded.split(':');
+
+  const validUser = process.env.ADMIN_USER || 'admin';
+  const validPass = process.env.ADMIN_PASS || 'stockwise2026';
+
+  if (user === validUser && pass === validPass) return next();
+
+  res.set('WWW-Authenticate', 'Basic realm="StockWise API"');
+  return res.status(401).json({ error: 'Invalid credentials.' });
+}
 
 
 app.use('/api/', apiLimiter);

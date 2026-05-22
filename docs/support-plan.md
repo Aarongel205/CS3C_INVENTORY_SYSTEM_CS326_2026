@@ -17,3 +17,12 @@
 5. Team lead (Sophia) triages and assigns to a team member
 6. Fix is developed on a feature branch and merged via PR
 7. Issue is closed when fix is deployed
+
+## Response Time SLA
+
+| Severity | Description | First Response | Resolution Target |
+|----------|-------------|---------------|------------------|
+| Critical | System down, data loss | 2 hours | 24 hours |
+| High | Major feature broken | 8 hours | 3 days |
+| Medium | Minor bug, workaround exists | 24 hours | 7 days |
+| Low | Enhancement / cosmetic | 48 hours | Next sprint |

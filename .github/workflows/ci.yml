@@ -70,6 +70,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy
-        run: echo "Add your deploy command here (Render/Railway/Fly.io/Vercel)"
-        # Example for Render:
-        # run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}

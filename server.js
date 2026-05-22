@@ -13,7 +13,7 @@ require('dotenv').config();
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-// ── Security Middleware (NIROS: Security assignment) ────────
+// ── Security Middleware (NIROS) ─────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -27,17 +27,7 @@ app.use(helmet({
   }
 }));
 
-
-// ── Rate Limiting (NIROS: Input validation / security) ─────
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 min
-  max: 200,
-  message: { error: 'Too many requests, please slow down.' }
-});
-
-app.use('/api/', apiLimiter);
-
-// ── Basic Authentication (NIROS: Security assignment) ──────
+// ── Basic Authentication (NIROS) ────────────────────────────
 function basicAuth(req, res, next) {
   if (req.path === '/api/health') return next();
 
@@ -60,25 +50,37 @@ function basicAuth(req, res, next) {
   return res.status(401).json({ error: 'Invalid credentials.' });
 }
 
+app.use('/api/', basicAuth);
+
+// ── Rate Limiting (NIROS) ───────────────────────────────────
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  message: { error: 'Too many requests, please slow down.' }
+});
 
 app.use('/api/', apiLimiter);
 
 // ── General Middleware ──────────────────────────────────────
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || '*'
-}));
-
-app.use(morgan('combined')); // Logging for KPIs / monitoring (SOPHIA)
-app.use(express.json({ limit: '50kb' })); // Input size limit
+app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
+app.use(morgan('combined')); // 
+app.use(express.json({ limit: '50kb' }));
 app.use(express.urlencoded({ extended: false }));
 
 // ── Serve Frontend ──────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ── Health Check (CI/CD smoke test endpoint — AARON) ───────
+// ── Health Check (AARON: CI/CD smoke test) ─────────────────
+app.get('/api/health', (req, res) => {
+  res.json({
+    status:    'ok',
+    version:   process.env.npm_package_version || '1.0.0',
+    timestamp: new Date().toISOString(),
+    env:       process.env.NODE_ENV || 'development'
+  });
+});
 
-
-// ── Input validation helper (NIROS: secure coding) ─────────
+// ── Input Validation (NIROS) ────────────────────────────────
 function validateItem(body) {
   const errors = [];
   if (!body.name || typeof body.name !== 'string' || body.name.trim().length < 1)
@@ -92,21 +94,20 @@ function validateItem(body) {
   return errors;
 }
 
-
-// ── Proxy routes to Supabase (optional — keeps key server-side) ──
-// If you want to keep your Supabase service key private, proxy
-// all DB requests through these routes instead of calling Supabase
-// directly from the browser.
-
+// ── Supabase Client ─────────────────────────────────────────
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(
   process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_KEY || '' // use SERVICE key on server
+  process.env.SUPABASE_SERVICE_KEY || ''
 );
 
-// GET /api/items
+// ── Routes (CED: Refactoring — TD-01) ──────────────────────
+const itemsRouter = require('./routes/items');
+const logsRouter  = require('./routes/logs');
+app.use('/api/items', itemsRouter);
+app.use('/api/logs',  logsRouter);
 
-// ── 404 fallback → SPA ──────────────────────────────────────
+// ── 404 fallback → SPA ─────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -117,4 +118,4 @@ app.listen(PORT, () => {
   console.log(`[StockWise] Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
- module.exports = app;// for Jest tests (AARON: QA assignment)
+module.exports = app; // for Jest tests (AARON: QA assignment)

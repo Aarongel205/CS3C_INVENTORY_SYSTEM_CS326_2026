@@ -117,4 +117,4 @@ app.listen(PORT, () => {
   console.log(`[StockWise] Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
- // for Jest tests (AARON: QA assignment)
+ module.exports = app;// for Jest tests (AARON: QA assignment)

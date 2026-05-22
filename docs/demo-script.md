@@ -2,7 +2,7 @@
 **Version:** v1.0.0
 
 ## 1. Open the app (30 sec)
-- Open https://your-app.onrender.com
+- Open [https://your-app.onrender.com](https://stockwise-inventory-4ocz.onrender.com/)
 - Show the dashboard — point out KPI cards and low stock alerts
 
 ## 2. Add an item (1 min)

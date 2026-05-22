@@ -95,9 +95,13 @@ function validateItem(body) {
 }
 
 // ── Supabase Client ─────────────────────────────────────────
+// ── Supabase Client ─────────────────────────────────────────
 const { createClient } = require('@supabase/supabase-js');
+const ws = require('ws');
 const supabase = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY)
-  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY, {
+      realtime: { transport: ws }
+    })
   : null;
 
 // ── Routes (CED: Refactoring — TD-01) ──────────────────────

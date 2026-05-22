@@ -14,7 +14,18 @@ const app  = express();
 const PORT = process.env.PORT || 3000;
 
 // ── Security Middleware (NIROS: Security assignment) ────────
-
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc:  ["'self'", "'unsafe-inline'", "fonts.googleapis.com"],
+      styleSrc:   ["'self'", "'unsafe-inline'", "fonts.googleapis.com", "fonts.gstatic.com"],
+      fontSrc:    ["'self'", "fonts.gstatic.com", "fonts.googleapis.com"],
+      connectSrc: ["'self'", process.env.SUPABASE_URL || '*'],
+      imgSrc:     ["'self'", "data:"]
+    }
+  }
+}));
 
 
 // ── Rate Limiting (NIROS: Input validation / security) ─────

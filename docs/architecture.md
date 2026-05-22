@@ -6,54 +6,7 @@
 
 ## Architecture Overview
 
-```
-┌─────────────────────────────────────────────────┐
-│                  CLIENT LAYER                   │
-│                                                 │
-│  Browser (Chrome / Firefox / Mobile)            │
-│  ┌─────────────────────────────────────────┐   │
-│  │  index.html + style.css + app.js        │   │
-│  │  Single Page App (SPA)                  │   │
-│  │  - Dashboard, Inventory, Reports, Logs  │   │
-│  │  - LocalStorage fallback when offline   │   │
-│  └─────────────────────────────────────────┘   │
-└────────────────────┬────────────────────────────┘
-                     │ HTTP / REST
-                     ▼
-┌─────────────────────────────────────────────────┐
-│                 SERVER LAYER                    │
-│                                                 │
-│  Node.js + Express (Render.com)                 │
-│  ┌─────────────────────────────────────────┐   │
-│  │  server.js                              │   │
-│  │  - Serves static frontend files         │   │
-│  │  - REST API: /api/items, /api/logs      │   │
-│  │  - Input validation                     │   │
-│  │  - Rate limiting (200 req/15min)        │   │
-│  │  - Helmet security headers              │   │
-│  │  - Morgan request logging               │   │
-│  └─────────────────────────────────────────┘   │
-└────────────────────┬────────────────────────────┘
-                     │ HTTPS / Supabase REST API
-                     ▼
-┌─────────────────────────────────────────────────┐
-│                DATABASE LAYER                   │
-│                                                 │
-│  Supabase (PostgreSQL — Singapore region)       │
-│  ┌────────────────┐  ┌───────────────────────┐ │
-│  │  items table   │  │  activity_logs table  │ │
-│  │  - id (UUID)   │  │  - id (UUID)          │ │
-│  │  - name        │  │  - action             │ │
-│  │  - sku         │  │  - item_name          │ │
-│  │  - category    │  │  - detail             │ │
-│  │  - quantity    │  │  - created_at         │ │
-│  │  - price       │  └───────────────────────┘ │
-│  │  - etc.        │                             │
-│  └────────────────┘                             │
-│  Row Level Security (RLS) enabled               │
-└─────────────────────────────────────────────────┘
-```
-
+![System Architecture](/assets/stockwise_architecture.svg.png)
 ---
 
 ## Technology Stack

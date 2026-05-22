@@ -96,10 +96,9 @@ function validateItem(body) {
 
 // ── Supabase Client ─────────────────────────────────────────
 const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(
-  process.env.SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_KEY || ''
-);
+const supabase = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY)
+  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+  : null;
 
 // ── Routes (CED: Refactoring — TD-01) ──────────────────────
 const itemsRouter = require('./routes/items');

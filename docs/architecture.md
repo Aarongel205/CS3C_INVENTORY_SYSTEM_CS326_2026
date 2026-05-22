@@ -6,7 +6,7 @@
 
 ## Architecture Overview
 
-![System Architecture](/assets/stockwise_architecture.svg.png)
+![System Architecture](/assets/stockwise_architecture.svg)
 ---
 
 ## Technology Stack

@@ -29,7 +29,7 @@ app.use(helmet({
 
 // ── Basic Authentication (NIROS) ────────────────────────────
 function basicAuth(req, res, next) {
-  if (req.path === '/api/health') return next();
+  if (req.path === '/health') return next();
 
   const authHeader = req.headers['authorization'];
   if (!authHeader || !authHeader.startsWith('Basic ')) {
